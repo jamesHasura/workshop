@@ -28,37 +28,33 @@ Let's go ahead and start exploring the GraphQL API for users table. We are going
 
 You can access GraphiQL by heading over to Console -> API -> GraphiQL tab.
 
-#### Mutation
+### Mutation
 
 Let's add a user using a GraphQL Mutation. Copy the following code into the GraphiQL interface.
 
-`
-mutation {
+`mutation {
   insert_users(objects:[{id: "1", name:"Praveen"}]) {
     affected_rows
   }
-}
-`
+}`
 
 Click on the Play button on the GraphiQL interface to execute the query.
 
 Now let's go ahead and query the data that we just inserted.
 
-`
-query {
+
+`query {
   users {
     id
     name
     created_at
   }
-}
-
-`
+}`
 
 Note that some columns like created_at have default values, even though you did not insert them during the mutation.
 
 
-#### Subscription
+### Subscription
 
 Let's run a subscription query over users table to watch for changes to the table.
 
@@ -88,17 +84,17 @@ Now let's move on to creating the other model: todos
 
 The todos table will have the following columns:
 
-` id (type Integer (auto-increment))`
+`id (type Integer (auto-increment))`
 
-` title (type Text) `
+`title (type Text)`
 
-` is_completed (type Boolean and default false) `
+`is_completed (type Boolean and default false)`
 
-` is_public (type Boolean and default false) `
+`is_public (type Boolean and default false)`
 
-` created_at (type Timestamp and default now()) `
+`created_at (type Timestamp and default now())`
 
-` user_id (type Text) `
+`user_id (type Text)`
 
 The columns are associated with properties of todo items.
 
@@ -112,7 +108,71 @@ Similar to the users table, the todos table created in the previous step would h
 
 Let's go ahead and start exploring the GraphQL API for todos table.
 
-#### Mutation
+### Mutation
 
 Head over to Console -> API -> GraphiQL tab and insert a todo using GraphQL Mutations.
 
+`mutation {
+  insert_todos(objects:[{title: "My First Todo", user_id: "1"}]) {
+    affected_rows
+  }
+}`
+
+### Query
+
+Now let's go ahead and query the data that we just inserted.
+
+`query {
+  todos {
+    id
+    title
+    is_public
+    is_completed
+    user_id
+  }
+}`
+
+### Relationships
+
+Relationships enable you to make nested object queries if the tables/views in your database are connected.
+
+GraphQL schema relationships can be either of
+
+#### object relationships (one-to-one)
+
+#### array relationships (one-to-many)
+
+
+### Object Relationships
+
+Let's say you want to query todos and more information about the user who created it. This is achievable using nested queries if a relationship exists between the two. This is a one-to-one query and hence called an object relationship.
+
+An example of such a nested query looks like this:
+
+`query {
+  todos {
+    id
+    title
+    user {
+      id
+      name
+    }
+  }
+}`
+
+In a single query, you are able to fetch todos and its related user information. This can be very powerful because you can nest to any level.
+
+### Array Relationships
+
+Let's look at an example query for array relationships.
+
+`query {
+  users {
+    id
+    name
+    todos {
+      id
+      title
+    }
+  }
+}`

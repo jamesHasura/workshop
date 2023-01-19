@@ -343,4 +343,82 @@ In the custom check, choose the following condition
 
 ![image](https://user-images.githubusercontent.com/104997905/213425585-fc87e572-2072-43e9-83b6-ba6dc24c29a9.png)
 
+Now under "Column insert permissions", select the title and is_public columns.
+
+![image](https://user-images.githubusercontent.com/104997905/213425835-c0ef251a-d39e-467a-b653-31376ab5663e.png)
+
+Finally under "Column presets", select user_id from from session variable mapping to X-HASURA-USER-ID.
+
+Note: Session variables are key-value pairs returned from the authentication service for each request. When a user makes a request, the session token maps to a USER-ID. This USER-ID can be used in permission to show that inserts into a table are only allowed if the user_id column has a value equal to that of USER-ID, the session variable.
+
+Click on Save Permissions.
+
+### Select permission
+
+We will allow users to view a todo entry if it is public or if they are logged-in users.
+
+Now click on edit icon for "select" permissions. In the custom check, choose the following condition
+
+`{"_or":[{"is_public":{"_eq":true}},{"user_id":{"_eq":"X-Hasura-User-Id"}}]}`
+
+![image](https://user-images.githubusercontent.com/104997905/213426288-a41f0c46-43a9-4bd3-a4d8-baaa946626b1.png)
+
+Under "Column select permissions", select all the columns.
+
+![image](https://user-images.githubusercontent.com/104997905/213426352-9c5ba8e8-a5db-4d75-8b13-2af388ae0b9a.png)
+
+Click on Save Permissions
+
+### Update permission
+
+We will only allow the is_completed column to be updated by a user.
+
+Now click on edit icon for "update" permissions. In the pre-update custom check, choose With same custom checks as insert.
+
+And under "Column update permissions", select the is_completed column.
+
+![image](https://user-images.githubusercontent.com/104997905/213426672-43b9c27e-97a9-4fa2-87da-f19152d57513.png)
+
+Click on Save Permissions once done.
+
+### Delete permission
+
+Only logged-in users are allowed to delete a todo entry.
+
+Finally for delete permission, under custom check, choose With same custom checks as insert, pre update.
+
+
+![image](https://user-images.githubusercontent.com/104997905/213426766-c68296bd-10ac-4e87-a75a-2763c0de52f6.png)
+
+Click on Save Permissions and you are done with access control for todos table.
+
+### Setup users table permissions
+
+We also need to allow select and update operations into users table. On the left sidebar, click on the users table to navigate to the users table page and switch to the Permissions tab.
+
+### Select permission
+
+Click on the Edit icon (pencil icon) to modify the select permission for role user. This would open up a section below which lets you configure its permissions.
+
+Here the users should be able to access every other user's id and name data.
+
+![image](https://user-images.githubusercontent.com/104997905/213427174-9cfecb63-e18e-4e65-9d43-2c1c98ed5cf5.png)
+
+Click on Save Permissions
+
+### Update permission
+
+The user who is logged in should be able to modify only their own record. So let’s set that permission now.
+
+Now click on edit icon for "update" permissions. In the pre-update custom check, choose With custom check with following condition.
+
+`{"id":{"_eq":"X-Hasura-User-Id"}}`
+
+Under column update permissions, select last_seen column, as this will be updated from the frontend app.
+
+![image](https://user-images.githubusercontent.com/104997905/213428108-be20767a-b3dd-4c7e-bc41-4159967a9fc0.png)
+
+Click on Save Permissions and you are done with access control rules for users table.
+
+
 

@@ -420,5 +420,45 @@ Under column update permissions, select last_seen column, as this will be update
 
 Click on Save Permissions and you are done with access control rules for users table.
 
+### Setup online_users view permissions
 
+Head over to the Permissions tab under online_users view to add relevant permissions.
 
+### Select permission
+
+Here in this view, we only want the user to be able to select data and not do any mutations. Hence we don't define any permission for insert, update or delete.
+
+For Row select permission, choose Without any checks and under "Column select permission", choose both the columns id and last_seen.
+
+![image](https://user-images.githubusercontent.com/104997905/213429067-211e2fdf-971c-42b3-bf6c-5a3212efb33a.png)
+
+Click on Save Permissions. You have completed all access control rules required for the realtime todo app.
+
+### Test out permissions
+
+Let's go ahead and start testing the permissions through the GraphQL API for todos table.
+
+### Query
+
+Now let's go ahead and query the data by adding two request headers:
+
+- x-hasura-role: user
+- x-hasura-user-id: 1
+
+`query {
+  todos {
+    id
+    title
+    is_public
+    is_completed
+    user_id
+  }
+}`
+
+You should get a response looking something like this:
+
+![image](https://user-images.githubusercontent.com/104997905/213429288-c3840bf1-741c-4544-92ec-ac57e1c4b48f.png)
+
+Note that the response received is filtered for the user id 1. If you change the value for x-hasura-user-id to 2, the data would be returned only for the user id 2. This confirms the permissions that we configured in the previous steps.
+
+You can test the permission configuration similarly for the users table as well.

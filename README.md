@@ -27,6 +27,7 @@ We will make use of Hasura CLI to manage the project locally. Start with an empt
 
 This will create a new project structure locally under the given directory (hasura by default). This is how the directory structure looks:
 
+```
 ├── config.yaml
 ├── metadata
 │   ├── actions.graphql
@@ -40,6 +41,7 @@ This will create a new project structure locally under the given directory (hasu
 │   └── version.yaml
 ├── migrations
 └── seeds
+```
 
 ### Docker Container 
 
@@ -59,7 +61,7 @@ Since you have Hasura running locally via docker-compose, run the following comm
 
 `hasura console`
 
-This should open up the console on http://localhost:9695, which is the same GUI as the one you see on the server console at http://localhost:8080.
+This should open up the console on http://localhost:9695, which is the same GUI as the one you see on the server console at http://localhost:8080. The difference is that using the hasura console automatically syncs all of your project metadata and migrations to the generated local yaml files that were generated. 
 
 
 ## Data Modeling

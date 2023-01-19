@@ -1,5 +1,103 @@
 # Workshop
 
+## Prerequisites
+
+## Install the Hasura CLI 
+
+The Hasura CLI is a command-line tool you can use to manage your Hasura instances.
+
+We offer two primary methods for working with your Hasura instances: the Hasura Console and the Hasura CLI. While the Console is robust and provides an easy-to-navigate GUI for interacting with your project, the CLI offers a more powerful interface for managing your project.
+
+The CLI is useful for:
+
+- Managing Metadata
+- Creating and applying Migrations
+- Integrating with your CI/CD pipeline
+- Automating tasks
+
+You can use the CLI to initialize a new Hasura Project from the very beginning, or you can use it to manage an existing one.
+
+https://hasura.io/docs/latest/hasura-cli/install-hasura-cli/
+
+## Hasura Project Setup
+
+We will make use of Hasura CLI to manage the project locally. Start with an empty folder and execute the following commands:
+
+`hasura init`
+
+This will create a new project structure locally under the given directory (hasura by default). This is how the directory structure looks:
+
+├── config.yaml
+├── metadata
+│   ├── actions.graphql
+│   ├── actions.yaml
+│   ├── allow_list.yaml
+│   ├── cron_triggers.yaml
+│   ├── databases
+│   │   └── databases.yaml
+│   ├── query_collections.yaml
+│   ├── remote_schemas.yaml
+│   └── version.yaml
+├── migrations
+└── seeds
+
+### Docker Container 
+
+#### run
+
+`wget https://raw.githubusercontent.com/hasura/graphql-engine/stable/install-manifests/docker-compose/docker-compose.yaml`
+
+#### or run
+
+`curl https://raw.githubusercontent.com/hasura/graphql-engine/stable/install-manifests/docker-compose/docker-compose.yaml -o docker-compose.yml`
+
+#### Start Docker container
+
+`docker-compose up -d`
+
+Since you have Hasura running locally via docker-compose, run the following command:
+
+`hasura console`
+
+This should open up the console on http://localhost:9695, which is the same GUI as the one you see on the server console at http://localhost:8080.
+
+
+## Data Modeling
+
+In this workshop, we will build the data model for a realtime todo app. Our todo app will have the following features:
+
+- Users can maintain personal todos
+- Users can view public todos
+- A list of currently online users using the app
+- Send email when a user signs up
+
+Broadly this means that we have two main models in this app: users and todos, each with its own set of properties.
+
+We will go over them in the subsequent steps.
+
+The final model looks like the following:
+
+![image](https://user-images.githubusercontent.com/104997905/213432083-20881210-57d2-497c-bca8-747184993be9.png)
+
+As we create tables using the console or directly on postgres, Hasura GraphQL engine automatically creates GraphQL schema object types and corresponding query/mutation fields with resolvers.
+
+## Connect a database
+
+Once on the console, head to the Data tab and navigate to the Connect Database section
+
+![image](https://user-images.githubusercontent.com/104997905/213436087-659e7ba4-8299-4600-9558-ff4d0905d2e8.png)
+
+- Enter the database name as default
+- Choose the Environment Variable option to connect the database
+- Enter the ENV name as PG_DATABASE_URL
+
+Click on Connect Database to finish the database connection. Now you can apply the migrations in the next step.
+
+It should look something like the screen below:
+
+![image](https://user-images.githubusercontent.com/104997905/213436433-b7f046fb-d1a3-4deb-b9d9-a44513b2dfb9.png)
+
+
 ## Create Users Table
 
 Let's get started by creating the users table.
@@ -462,3 +560,14 @@ You should get a response looking something like this:
 Note that the response received is filtered for the user id 1. If you change the value for x-hasura-user-id to 2, the data would be returned only for the user id 2. This confirms the permissions that we configured in the previous steps.
 
 You can test the permission configuration similarly for the users table as well.
+
+## Deploy project to staging environment in Hasura cloud
+
+https://github.com/hasura/github-integration-starter
+
+
+
+
+
+
+

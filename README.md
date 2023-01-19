@@ -264,5 +264,83 @@ The SQL statement for creating this view looks like this:
    FROM users
   WHERE (users.last_seen >= (now() - '00:00:30'::interval));`
   
-  
-  
+Let's add this view and track the view with Hasura to be able to query it.
+
+Head to Console -> DATA -> SQL page.
+
+![image](https://user-images.githubusercontent.com/104997905/213424283-c1fb28aa-0f41-49e9-8a40-c727f7c7619a.png)
+
+### Subscription to Online Users
+
+Now let's test by making a subscription query to the online_users view.
+
+`subscription {
+  online_users {
+    id
+    last_seen
+  }
+}`
+
+In another tab, update an existing user's last_seen value to see the subscription response getting updated.
+
+![image](https://user-images.githubusercontent.com/104997905/213424505-47784bfb-6683-4bdf-bd87-046bb686cb6a.png)
+
+Enter the value as now() for the last_seen column and click on Save.
+
+Now switch back to the tab where your subscription query is running to see the updated response.
+
+### Create relationship to user
+
+Now that the view has been created, we need a way to be able to fetch user information based on the id column of the view. Let's create a manual relationship from the view online_users to the table users using the id column of the view.
+
+Head to Console -> Data -> online_users -> Relationships page.
+
+Add a new relationship manually by choosing the relationship type to be Object Relationship. Enter the relationship name as user. Select the configuration for the current column as id and the remote table would be users and the remote column would be id again.
+
+We are mapping the current view's id column to users table's id column to create the relationship.
+
+![image](https://user-images.githubusercontent.com/104997905/213424851-32bb6184-7727-43d6-b000-de1290e32004.png)
+
+Let's explore the GraphQL APIs for the relationship created.
+
+`query {
+  online_users {
+    id
+    last_seen
+    user {
+      id
+      name
+    }
+  }
+}`
+
+Great! We are completely done with data modeling for the app.
+
+### Authorization
+
+In this part of the tutorial, we are going to define role-based access control rules for each of the models that we created.
+
+Access control rules help in restricting querying on a table based on certain conditions.
+
+In this realtime todo app use-case, we need to restrict all querying only for logged in users. Also, certain columns in tables do not need to be exposed to the user.
+
+The aim of the app is to allow users to manage their own todos only but should be able to view all the public todos.
+
+Setup todos table permissions
+Head over to the Permissions tab under todos table to add relevant permissions.
+
+### Insert permission
+
+We will allow logged-in users creating a new todo entry to only specify the is_public and title columns.
+
+In the enter new role textbox, type in “user”
+
+Click on edit (pencil) icon for “insert” permissions. This would open up a section below, which lets you configure custom checks and allow columns.
+
+In the custom check, choose the following condition
+
+`{"user_id":{"_eq":"X-Hasura-User-Id"}}`
+
+![image](https://user-images.githubusercontent.com/104997905/213425585-fc87e572-2072-43e9-83b6-ba6dc24c29a9.png)
+
+
